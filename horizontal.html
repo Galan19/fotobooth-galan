@@ -1,57 +1,72 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <title>Foto Horizontal</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fotobooth Horizontal</title>
   <style>
-    body { text-align: center; font-family: sans-serif; }
-    canvas, video, img { max-width: 100%; margin-top: 10px; }
-    #twibbon { position: absolute; top: 0; left: 0; width: 100%; }
-    #container { position: relative; display: inline-block; }
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 1rem;
+    }
+    #container {
+      position: relative;
+      width: 400px;
+      margin: 0 auto;
+    }
+    video, canvas {
+      width: 400px;
+      height: 300px;
+      border-radius: 12px;
+    }
+    #twibbon {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 400px;
+      height: 300px;
+      pointer-events: none;
+    }
+    #btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-
-  <h2>Ambil Foto dengan Twibbon Horizontal</h2>
-
+  <h2>Ambil Foto dengan Twibbon Horizontal 📸</h2>
   <div id="container">
-    <video id="video" width="640" height="480" autoplay></video>
-    <img id="twibbon" src="Twibbon-A.png" alt="Twibbon" />
+    <video id="video" autoplay playsinline></video>
+    <img id="twibbon" src="Twibbon-A.png" alt="Twibbon Horizontal">
+    <canvas id="canvas" style="display:none;"></canvas>
   </div>
-  
-  <br>
-  <button onclick="ambilFoto()">📸 Ambil Foto</button>
-  <br><br>
-  <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
-  <br>
-  <a id="downloadLink" style="display:none;" download="Twibbon-A.png">⬇️ Download Hasil</a>
+  <button id="btn">📸 Ambil Foto</button>
+  <a id="download" style="display:none;" download="foto-galan.png">📥 Unduh Foto</a>
 
   <script>
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const twibbon = document.getElementById('twibbon');
-    const ctx = canvas.getContext('2d');
-    const downloadLink = document.getElementById('downloadLink');
+    const btn = document.getElementById('btn');
+    const download = document.getElementById('download');
 
-    // Nyalakan kamera
     navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => { video.srcObject = stream; })
-      .catch(err => { alert("Gagal akses kamera: " + err); });
+      .then(stream => video.srcObject = stream)
+      .catch(err => alert('Tidak dapat mengakses kamera 😢'));
 
-    // Ambil foto
-    function ambilFoto() {
+    btn.onclick = () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const twibbonImg = new Image();
-      twibbonImg.src = twibbon.src;
-      twibbonImg.onload = () => {
-        ctx.drawImage(twibbonImg, 0, 0, canvas.width, canvas.height);
-        canvas.style.display = 'block';
-        const dataURL = canvas.toDataURL('image/png');
-        downloadLink.href = dataURL;
-        downloadLink.style.display = 'inline-block';
-      };
-    }
+      ctx.drawImage(twibbon, 0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'block';
+      download.href = canvas.toDataURL('image/png');
+      download.style.display = 'inline-block';
+    };
   </script>
-
 </body>
 </html>
