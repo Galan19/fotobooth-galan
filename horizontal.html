@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Foto Horizontal</title>
+  <style>
+    body { text-align: center; font-family: sans-serif; }
+    canvas, video, img { max-width: 100%; margin-top: 10px; }
+    #twibbon { position: absolute; top: 0; left: 0; width: 100%; }
+    #container { position: relative; display: inline-block; }
+  </style>
+</head>
+<body>
+
+  <h2>Ambil Foto dengan Twibbon Horizontal</h2>
+
+  <div id="container">
+    <video id="video" width="640" height="480" autoplay></video>
+    <img id="twibbon" src="pngtree-gambar-twibbon-ucapan-hari-haji-dengan-kabah-png-image_4565696.png" alt="Twibbon" />
+  </div>
+  
+  <br>
+  <button onclick="ambilFoto()">📸 Ambil Foto</button>
+  <br><br>
+  <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+  <br>
+  <a id="downloadLink" style="display:none;" download="pngtree-gambar-twibbon-ucapan-hari-haji-dengan-kabah-png-image_4565696.png">⬇️ Download Hasil</a>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const twibbon = document.getElementById('twibbon');
+    const ctx = canvas.getContext('2d');
+    const downloadLink = document.getElementById('downloadLink');
+
+    // Nyalakan kamera
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => { video.srcObject = stream; })
+      .catch(err => { alert("Gagal akses kamera: " + err); });
+
+    // Ambil foto
+    function ambilFoto() {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const twibbonImg = new Image();
+      twibbonImg.src = twibbon.src;
+      twibbonImg.onload = () => {
+        ctx.drawImage(twibbonImg, 0, 0, canvas.width, canvas.height);
+        canvas.style.display = 'block';
+        const dataURL = canvas.toDataURL('image/png');
+        downloadLink.href = dataURL;
+        downloadLink.style.display = 'inline-block';
+      };
+    }
+  </script>
+
+</body>
+</html>
