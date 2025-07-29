@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fotobooth Vertikal</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding: 1rem;
+    }
+    #container {
+      position: relative;
+      width: 300px;
+      margin: 0 auto;
+    }
+    video, canvas {
+      width: 300px;
+      height: 400px;
+      border-radius: 12px;
+    }
+    #twibbon {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 300px;
+      height: 400px;
+      pointer-events: none;
+    }
+    #btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Ambil Foto dengan Twibbon Vertikal 📸</h2>
+  <div id="container">
+    <video id="video" autoplay playsinline></video>
+    <img id="twibbon" src="Twibbon-B.png" alt="Twibbon Vertikal">
+    <canvas id="canvas" style="display:none;"></canvas>
+  </div>
+  <button id="btn">📸 Ambil Foto</button>
+  <a id="download" style="display:none;" download="foto-galan.png">📥 Unduh Foto</a>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const twibbon = document.getElementById('twibbon');
+    const btn = document.getElementById('btn');
+    const download = document.getElementById('download');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => video.srcObject = stream)
+      .catch(err => alert('Tidak dapat mengakses kamera 😢'));
+
+    btn.onclick = () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(twibbon, 0, 0, canvas.width, canvas.height);
+      canvas.style.display = 'block';
+      download.href = canvas.toDataURL('image/png');
+      download.style.display = 'inline-block';
+    };
+  </script>
+</body>
+</html>
